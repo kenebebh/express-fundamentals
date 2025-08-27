@@ -7,6 +7,8 @@ const app = express();
 // 3. Define the port our server will listen on.
 const port = 3001;
 
+app.set("view engine", "ejs");
+
 // 4. Middleware to parse incoming JSON data.
 // This is required so we can read data sent in the body of POST and PATCH requests.
 app.use(express.json());
@@ -16,6 +18,7 @@ app.use(express.json());
 let todos = [
   { id: 1, title: "Learn Express.js", completed: false },
   { id: 2, title: "Build a CRUD API", completed: true },
+  { id: 3, title: "Build an HTML ejs page", completed: false },
 ];
 
 // 6. A simple counter to generate unique IDs for new todo items.
@@ -40,8 +43,10 @@ app.post("/api/todos", (req, res) => {
   todos.push(newTodo);
 
   // Send back the newly created todo with a status code of 201 (Created).
-  res.status(201).json(newTodo);
+  res.status(201).json(todos);
 });
+
+const FullName = "Banigo Kene";
 
 // -------------------------------------------------------------------------
 // R - READ (using GET)
@@ -50,7 +55,8 @@ app.post("/api/todos", (req, res) => {
 // This route gets ALL todo items. It listens for GET requests to '/api/todos'.
 app.get("/api/todos", (req, res) => {
   // Send the entire 'todos' array back as a JSON response.
-  res.json(todos);
+  // res.json(todos);
+  res.render("learning", { FullName: FullName });
 });
 
 // This route gets a SINGLE todo item by its ID.
@@ -77,6 +83,9 @@ app.get("/api/todos/:id", (req, res) => {
 
 // This route updates an existing todo item. It listens for PATCH requests to '/api/todos/:id'.
 app.patch("/api/todos/:id", (req, res) => {
+  const newTitle = req.body.title;
+  const isCompleted = req.body.completed;
+
   // Get the ID from the URL and find the todo.
   const todoId = parseInt(req.params.id);
   const todoToUpdate = todos.find((t) => t.id === todoId);
@@ -86,11 +95,12 @@ app.patch("/api/todos/:id", (req, res) => {
   }
 
   // Check if the request body contains a new 'title' or 'completed' status.
-  if (req.body.title !== undefined) {
-    todoToUpdate.title = req.body.title;
+  // if (req.body.title !== undefined) {
+  if (newTitle !== undefined) {
+    todoToUpdate.title = newTitle;
   }
-  if (req.body.completed !== undefined) {
-    todoToUpdate.completed = req.body.completed;
+  if (isCompleted !== undefined) {
+    todoToUpdate.completed = isCompleted;
   }
 
   // Send back the updated todo object.
@@ -118,7 +128,7 @@ app.delete("/api/todos/:id", (req, res) => {
   todos.splice(todoIndex, 1);
 
   // Send a 204 (No Content) status, which is standard for a successful deletion.
-  res.status(204).send();
+  res.status(204).send({ message: "Todo deleted succesfully" });
 });
 
 // -------------------------------------------------------------------------
