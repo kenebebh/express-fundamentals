@@ -16,13 +16,30 @@ app.use(express.json());
 // 5. Our in-memory "database" for storing todo items.
 // This is a simple JavaScript array that will hold our data.
 let todos = [
-  { id: 1, title: "Learn Express.js", completed: false },
-  { id: 2, title: "Build a CRUD API", completed: true },
-  { id: 3, title: "Build an HTML ejs page", completed: false },
+  {
+    id: 1,
+    title: "Learn Express.js",
+    body: "Hello worls *1",
+    completed: false,
+  },
+  { id: 2, title: "Build a CRUD API", body: "Hello worls *2", completed: true },
+  {
+    id: 3,
+    title: "Build an HTML ejs page",
+    body: "Hello worls *3",
+    completed: false,
+  },
 ];
 
 // 6. A simple counter to generate unique IDs for new todo items.
-let nextId = 3;
+let nextId = 4;
+
+// This route gets ALL todo items. It listens for GET requests to '/api/todos'.
+app.get("/api/todos", (req, res) => {
+  // Send the entire 'todos' array back as a JSON response.
+  // res.json(todos);
+  res.render("index", { todos: todos });
+});
 
 // -------------------------------------------------------------------------
 // C - CREATE (using POST)
@@ -31,11 +48,13 @@ let nextId = 3;
 app.post("/api/todos", (req, res) => {
   // Get the 'title' from the data sent in the request body.
   const newTitle = req.body.title;
+  const newBody = req.body.body;
 
   // Create a new todo object with a unique ID and the title.
   const newTodo = {
     id: nextId++,
     title: newTitle,
+    body: newBody,
     completed: false, // New todos are not completed by default.
   };
 
@@ -46,18 +65,9 @@ app.post("/api/todos", (req, res) => {
   res.status(201).json(todos);
 });
 
-const FullName = "Banigo Kene";
-
 // -------------------------------------------------------------------------
 // R - READ (using GET)
 // -------------------------------------------------------------------------
-
-// This route gets ALL todo items. It listens for GET requests to '/api/todos'.
-app.get("/api/todos", (req, res) => {
-  // Send the entire 'todos' array back as a JSON response.
-  // res.json(todos);
-  res.render("learning", { FullName: FullName });
-});
 
 // This route gets a SINGLE todo item by its ID.
 // The ':id' is a URL parameter that holds the specific ID we're looking for.

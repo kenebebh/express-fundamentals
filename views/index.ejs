@@ -13,8 +13,9 @@
         <h1>Todo List</h1>
         
         <!-- Form to CREATE a new todo -->
-        <form action="/todos" method="POST" class="add-form">
+        <form action="/api/todos" method="POST" class="add-form">
             <input type="text" name="title" placeholder="Add a new todo..." required>
+            <input type="text" name="body" placeholder="Add a description..." required>
             <button type="submit">Add Todo</button>
         </form>
 
@@ -31,14 +32,14 @@
                     <div class="buttons">
                         <!-- Form to UPDATE (complete) a todo -->
                         <!-- The action URL includes the specific todo ID -->
-                        <form action="/todos/complete/<%= todo.id %>" method="PATCH" style="display:inline;">
+                        <form action="/api/todos/complete/<%= todo.id %>" method="POST" style="display:inline;">
                             <button type="submit" class="complete-btn" <%= todo.completed ? 'disabled' : '' %>>
                                 <%= todo.completed ? "Completed" : "Mark Complete" %>
                             </button>
                         </form>
 
                         <!-- Form to DELETE a todo -->
-                        <form action="/todos/delete/<%= todo.id %>" method="POST" style="display:inline;">
+                        <form action="/api/todos/delete/<%= todo.id %>" method="POST" style="display:inline;">
                             <button type="submit" class="delete-btn">
                                 Delete
                             </button>
